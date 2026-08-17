@@ -5,8 +5,6 @@ import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.render.model.json.ModelTransformationMode;
-import net.minecraft.client.render.model.json.Transformation;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Direction;
@@ -22,8 +20,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * BakedModel wrapper that transforms raw CIT Resewn item quads into in-world block coordinates.
- * Applies scale (2.87x), height offset, and facing rotation matching OptiFine/CIT item frame display.
+ * BakedModel wrapper that positions raw CIT Resewn 3D models cleanly into in-world block coordinates.
+ * Automatically grounds models at floor level (Y=0), centers them on the block, and rotates to match block facing.
  */
 public class TransformedCitBakedModel implements BakedModel {
     private final BakedModel originalModel;
@@ -32,31 +30,64 @@ public class TransformedCitBakedModel implements BakedModel {
     public TransformedCitBakedModel(@NotNull BakedModel originalModel, @Nullable Direction facing) {
         this.originalModel = originalModel;
 
-        // Build transformation matrix
-        MatrixStack matrices = new MatrixStack();
-        matrices.translate(0.5, 0.5, 0.5);
-
-        if (facing != null) {
-            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-facing.asRotation()));
-        }
-
-        // Apply CIT Resewn / Blockbench display transform for FIXED (Item Frame)
-        Transformation fixedTransform = originalModel.getTransformation().getTransformation(ModelTransformationMode.FIXED);
-        if (fixedTransform != null && !fixedTransform.equals(Transformation.IDENTITY)) {
-            fixedTransform.apply(false, matrices);
-        }
-
-        matrices.translate(-0.5, -0.5, -0.5);
-
-        Matrix4f posMatrix = matrices.peek().getPositionMatrix();
-
-        // Transform all original quads (both unculled and culled) into unculled block quads
+        // 1. Gather all original raw quads
         Random random = Random.create(42L);
         List<BakedQuad> allOriginalQuads = new ArrayList<>(originalModel.getQuads(null, null, random));
         for (Direction dir : Direction.values()) {
             allOriginalQuads.addAll(originalModel.getQuads(null, dir, random));
         }
 
+        // 2. Compute bounding box of raw geometry
+        float minX = Float.MAX_VALUE, minY = Float.MAX_VALUE, minZ = Float.MAX_VALUE;
+        float maxX = -Float.MAX_VALUE, maxY = -Float.MAX_VALUE, maxZ = -Float.MAX_VALUE;
+
+        for (BakedQuad quad : allOriginalQuads) {
+            int[] src = quad.getVertexData();
+            for (int i = 0; i < 4; i++) {
+                int offset = i * 8;
+                float x = Float.intBitsToFloat(src[offset + 0]);
+                float y = Float.intBitsToFloat(src[offset + 1]);
+                float z = Float.intBitsToFloat(src[offset + 2]);
+
+                minX = Math.min(minX, x);
+                minY = Math.min(minY, y);
+                minZ = Math.min(minZ, z);
+                maxX = Math.max(maxX, x);
+                maxY = Math.max(maxY, y);
+                maxZ = Math.max(maxZ, z);
+            }
+        }
+
+        // 3. Build Matrix
+        MatrixStack matrices = new MatrixStack();
+
+        // Center on block anchor
+        matrices.translate(0.5f, 0.0f, 0.5f);
+
+        // Rotation matching facing
+        // In Blockbench model coords, muzzle points -X (West). Rotate so facing matches correctly.
+        if (facing != null) {
+            float rotY = switch (facing) {
+                case NORTH -> 90.0f;
+                case SOUTH -> -90.0f;
+                case WEST -> 0.0f;
+                case EAST -> 180.0f;
+                default -> 0.0f;
+            };
+            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(rotY));
+        }
+
+        // Center model geometry and auto-ground to floor (Y=0)
+        float centerX = (minX + maxX) / 2.0f;
+        float centerZ = (minZ + maxZ) / 2.0f;
+        float groundOffsetY = (minY < 0.0f) ? -minY : 0.0f;
+
+        // Move to local origin, apply ground offset, and translate to anchor
+        matrices.translate(-centerX, groundOffsetY, -centerZ);
+
+        Matrix4f posMatrix = matrices.peek().getPositionMatrix();
+
+        // 4. Transform all quads
         List<BakedQuad> transformed = new ArrayList<>(allOriginalQuads.size());
         for (BakedQuad quad : allOriginalQuads) {
             transformed.add(transformQuad(quad, posMatrix));
@@ -89,7 +120,6 @@ public class TransformedCitBakedModel implements BakedModel {
 
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction face, Random random) {
-        // All transformed 3D geometry is returned as unculled quads (face == null)
         if (face == null) {
             return transformedUnculledQuads;
         }
