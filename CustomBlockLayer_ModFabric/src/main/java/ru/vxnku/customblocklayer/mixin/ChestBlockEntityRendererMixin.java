@@ -5,6 +5,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.LidOpenable;
+import net.minecraft.block.enums.ChestType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.RenderLayer;
@@ -35,6 +36,14 @@ public abstract class ChestBlockEntityRendererMixin<T extends BlockEntity & LidO
     @Shadow @Final private ModelPart singleChestLid;
     @Shadow @Final private ModelPart singleChestLatch;
     @Shadow @Final private ModelPart singleChestBase;
+
+    @Shadow @Final private ModelPart doubleChestLeftLid;
+    @Shadow @Final private ModelPart doubleChestLeftLatch;
+    @Shadow @Final private ModelPart doubleChestLeftBase;
+
+    @Shadow @Final private ModelPart doubleChestRightLid;
+    @Shadow @Final private ModelPart doubleChestRightLatch;
+    @Shadow @Final private ModelPart doubleChestRightBase;
 
     @Shadow
     protected abstract void render(
@@ -69,6 +78,7 @@ public abstract class ChestBlockEntityRendererMixin<T extends BlockEntity & LidO
 
         BlockState state = entity.hasWorld() ? entity.getCachedState() : Blocks.CHEST.getDefaultState();
         Direction facing = state.contains(Properties.HORIZONTAL_FACING) ? state.get(Properties.HORIZONTAL_FACING) : Direction.SOUTH;
+        ChestType chestType = state.contains(Properties.CHEST_TYPE) ? state.get(Properties.CHEST_TYPE) : ChestType.SINGLE;
 
         // Mode 1: Arbitrary 3D JSON Model
         if (def.isJsonModel() && CustomBlockRegistry.hasJsonModel(customId)) {
@@ -99,8 +109,8 @@ public abstract class ChestBlockEntityRendererMixin<T extends BlockEntity & LidO
             }
         }
 
-        // Mode 2: Animated Chest with Custom 64x64 Texture Map
-        RenderLayer customLayer = CustomChestModelManager.getChestRenderLayer(customId);
+        // Mode 2: Animated Chest with Custom 64x64 Texture Map (Single & Double Chests)
+        RenderLayer customLayer = CustomChestModelManager.getChestRenderLayer(customId, chestType);
         if (customLayer != null) {
             matrices.push();
             float rot = facing.asRotation();
@@ -116,11 +126,25 @@ public abstract class ChestBlockEntityRendererMixin<T extends BlockEntity & LidO
             }
 
             VertexConsumer vertexConsumer = vertexConsumers.getBuffer(customLayer);
-            this.render(
-                matrices, vertexConsumer,
-                this.singleChestLid, this.singleChestLatch, this.singleChestBase,
-                openProgress, light, overlay
-            );
+            if (chestType == ChestType.LEFT) {
+                this.render(
+                    matrices, vertexConsumer,
+                    this.doubleChestLeftLid, this.doubleChestLeftLatch, this.doubleChestLeftBase,
+                    openProgress, light, overlay
+                );
+            } else if (chestType == ChestType.RIGHT) {
+                this.render(
+                    matrices, vertexConsumer,
+                    this.doubleChestRightLid, this.doubleChestRightLatch, this.doubleChestRightBase,
+                    openProgress, light, overlay
+                );
+            } else {
+                this.render(
+                    matrices, vertexConsumer,
+                    this.singleChestLid, this.singleChestLatch, this.singleChestBase,
+                    openProgress, light, overlay
+                );
+            }
 
             matrices.pop();
             ci.cancel();
