@@ -1,0 +1,23 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "ru.vxnku.customblocklayer.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [],
+  "client": [
+    "BlockModelRendererMixin",
+    "BlockRenderManagerMixin",
+    "IndigoTerrainRenderContextMixin",
+    "ItemModelsMixin",
+    "ItemRendererMixin",
+    "MinecraftClientPickBlockMixin",
+    "SodiumBlockRendererMixin",
+    "AbstractBlockStateMixin",
+    "ItemGroupsMixin",
+    "ItemGroupMixin",
+    "TrapdoorBlockMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

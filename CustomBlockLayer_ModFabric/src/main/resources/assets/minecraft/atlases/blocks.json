@@ -1,0 +1,19 @@
+{
+  "sources": [
+    {
+      "type": "directory",
+      "source": "cbl",
+      "prefix": "cbl/"
+    },
+    {
+      "type": "directory",
+      "source": "optifine/cbl",
+      "prefix": "optifine/cbl/"
+    },
+    {
+      "type": "directory",
+      "source": "textures/cbl",
+      "prefix": "textures/cbl/"
+    }
+  ]
+}

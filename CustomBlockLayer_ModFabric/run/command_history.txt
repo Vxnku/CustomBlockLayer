@@ -1,0 +1,34 @@
+/cbl set demo_ruby_ore
+/cbl set magic_crate
+/cbl set red_concrete_stairs
+/cbl set cyan_concrete_slab
+/attribute Player677 minecraft:generic.scale base get
+/attribute Player677 minecraft:generic.scale base set 2
+/attribute Player677 minecraft:generic.scale base set 5
+/attribute Player677 minecraft:generic.scale base set 0.95
+/attribute Player677 minecraft:generic.scale base set 0.9
+/attribute Player677 minecraft:generic.scale base set 1.1
+/attribute Player677 minecraft:generic.scale base set 0.9
+/attribute Player677 minecraft:generic.scale base set 1
+/attribute Player677 minecraft:generic.scale base set 0.95
+/attribute Player677 minecraft:generic.scale base set 0.9
+/attribute Player677 minecraft:generic.scale base set 1.1
+/attribute Player677 minecraft:generic.scale base set 1.25
+/attribute Player677 minecraft:generic.scale base set 1
+/attribute Player677 minecraft:generic.scale base set 0.2
+/attribute Player677 minecraft:generic.scale base set 01
+/attribute Player677 minecraft:generic.scale base set 1
+/attribute Player677 minecraft:generic.scale base set 200
+/attribute Player677 minecraft:generic.scale base set 2
+/attribute Player677 minecraft:generic.scale base set 200
+/attribute Player677 minecraft:generic.scale base set 1
+/attribute 3d68cc80-c878-4943-aca8-e9d64ed59279 minecraft:generic.scale 2
+/attribute 3d68cc80-c878-4943-aca8-e9d64ed59279 minecraft:generic.scale base set 2
+/summon minecraft:ocelot
+/attribute 71b5c707-5917-4747-954c-f92ab346a039 minecraft:generic.scale base set 2
+/attribute 71b5c707-5917-4747-954c-f92ab346a039 minecraft:generic.scale base set 1.4
+/attribute 71b5c707-5917-4747-954c-f92ab346a039 minecraft:generic.scale base set 1.6
+/attribute 71b5c707-5917-4747-954c-f92ab346a039 minecraft:generic.scale base set 1.7
+/attribute Player677 minecraft:player.entity_interaction_range base set 20
+/attribute Player677 minecraft:player.block_break_speed base set 20
+/attribute Player677 minecraft:player.block_interaction_range base set 20

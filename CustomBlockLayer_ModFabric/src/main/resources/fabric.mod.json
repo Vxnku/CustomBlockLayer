@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "customblocklayer",
+  "version": "${version}",
+  "name": "CustomBlockLayer",
+  "description": "Client-side custom block layer and retexturing system",
+  "authors": [],
+  "contact": {
+    "repo": "https://github.com/Yus/CustomBlockLayer"
+  },
+  "license": "All-Rights-Reserved",
+  "icon": "assets/customblocklayer/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "ru.vxnku.customblocklayer.CustomBlockLayerClient"
+    ]
+  },
+  "mixins": [
+    "customblocklayer.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}

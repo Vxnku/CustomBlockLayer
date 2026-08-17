@@ -1,0 +1,18 @@
+name: CustomBlockLayer
+main: ru.vxnku.customblocklayer.CustomBlockLayerPlugin
+version: 1.0.0
+api-version: "1.21"
+author: vxnku
+description: CustomBlockLayer Paper Plugin (Minecraft 1.21.1)
+softdepend: [WorldEdit, CoreProtect]
+
+commands:
+  cbl:
+    description: Основная команда управления CustomBlockLayer
+    permission: customblocklayer.admin
+    usage: /<command> [give|set|remove|reload]
+
+permissions:
+  customblocklayer.admin:
+    description: Доступ к управлению кастомными блоками
+    default: op
