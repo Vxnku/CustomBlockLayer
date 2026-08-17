@@ -17,7 +17,8 @@
     "ItemGroupMixin",
     "TrapdoorBlockMixin",
     "ChestBlockEntityRendererMixin",
-    "BuiltinModelItemRendererMixin"
+    "BuiltinModelItemRendererMixin",
+    "BlockEntityRenderDispatcherMixin"
   ],
   "injectors": {
     "defaultRequire": 1
