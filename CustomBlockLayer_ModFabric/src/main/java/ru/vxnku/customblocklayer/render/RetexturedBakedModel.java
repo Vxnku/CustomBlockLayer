@@ -99,7 +99,7 @@ public class RetexturedBakedModel implements BakedModel, FabricBakedModel {
 
         // 2. Open Lid Texture (e.g. barrel open top / interior)
         if (isOpen && definition.getOpenTopTexture() != null) {
-            if (origPath.contains("open") || origPath.contains("top") || (quad.getFace() == Direction.UP || side == Direction.UP)) {
+            if (origPath.contains("open") || origPath.contains("top")) {
                 Sprite openSprite = CustomBlockRegistry.getSprite(definition.getOpenTopTexture());
                 if (openSprite != null) {
                     return openSprite;
