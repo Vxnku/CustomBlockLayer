@@ -97,73 +97,42 @@ public class RetexturedBakedModel implements BakedModel, FabricBakedModel {
         boolean isOpen = (state != null && state.contains(Properties.OPEN) && Boolean.TRUE.equals(state.get(Properties.OPEN)))
                 || origPath.contains("open");
 
-        Direction facing = state != null && state.contains(Properties.FACING) ? state.get(Properties.FACING) : null;
-        Direction quadFace = quad.getFace() != null ? quad.getFace() : side;
-
-        // 2. Handling Rotated / Facing Blocks (like Barrel, Piston, Dropper, Dispenser)
-        if (facing != null) {
-            if (quadFace == facing || origPath.contains("top") || origPath.contains("open")) {
-                // This is the Top / Lid face
-                if (isOpen && definition.getOpenTopTexture() != null) {
-                    Sprite openSprite = CustomBlockRegistry.getSprite(definition.getOpenTopTexture());
-                    if (openSprite != null) {
-                        return openSprite;
-                    }
-                }
-                Sprite topSprite = CustomBlockRegistry.getSpriteForFace(definition, Direction.UP);
-                if (topSprite != null) {
-                    return topSprite;
-                }
-            } else if (quadFace == facing.getOpposite() || origPath.contains("bottom") || origPath.contains("down")) {
-                // This is the Bottom face
-                Sprite bottomSprite = CustomBlockRegistry.getSpriteForFace(definition, Direction.DOWN);
-                if (bottomSprite != null) {
-                    return bottomSprite;
-                }
-            } else {
-                // Side faces
-                Sprite sideSprite = CustomBlockRegistry.getSpriteForFace(definition, Direction.NORTH);
-                if (sideSprite != null) {
-                    return sideSprite;
-                }
-                if (quadFace != null) {
-                    Sprite faceSprite = CustomBlockRegistry.getSpriteForFace(definition, quadFace);
-                    if (faceSprite != null) {
-                        return faceSprite;
-                    }
-                }
-            }
-        } else {
-            // 3. Standard Non-Facing or Item / Plant / Block Rendering
-            if (isOpen && definition.getOpenTopTexture() != null && (origPath.contains("open") || origPath.contains("top") || quadFace == Direction.UP)) {
+        // 2. Open Lid Texture (e.g. barrel open top / interior)
+        if (isOpen && definition.getOpenTopTexture() != null) {
+            if (origPath.contains("open") || origPath.contains("top") || (quad.getFace() == Direction.UP || side == Direction.UP)) {
                 Sprite openSprite = CustomBlockRegistry.getSprite(definition.getOpenTopTexture());
                 if (openSprite != null) {
                     return openSprite;
                 }
             }
+        }
 
-            // Semantic matching by original texture name keywords
-            if (origPath.contains("top") || origPath.contains("up")) {
-                Sprite s = CustomBlockRegistry.getSpriteForFace(definition, Direction.UP);
-                if (s != null) return s;
-            } else if (origPath.contains("bottom") || origPath.contains("down")) {
-                Sprite s = CustomBlockRegistry.getSpriteForFace(definition, Direction.DOWN);
-                if (s != null) return s;
-            } else if (origPath.contains("side")) {
-                Sprite s = CustomBlockRegistry.getSpriteForFace(definition, Direction.NORTH);
-                if (s != null) return s;
-            }
+        // 3. Semantic matching by original texture name keywords
+        if (origPath.contains("top") || origPath.contains("up")) {
+            Sprite s = CustomBlockRegistry.getSpriteForFace(definition, Direction.UP);
+            if (s != null) return s;
+        } else if (origPath.contains("bottom") || origPath.contains("down")) {
+            Sprite s = CustomBlockRegistry.getSpriteForFace(definition, Direction.DOWN);
+            if (s != null) return s;
+        } else if (origPath.contains("side")) {
+            Sprite s = CustomBlockRegistry.getSpriteForFace(definition, Direction.NORTH);
+            if (s != null) return s;
+        } else if (origPath.contains("front")) {
+            Sprite s = CustomBlockRegistry.getSpriteForFace(definition, Direction.NORTH);
+            if (s != null) return s;
+        }
 
-            Direction targetDirection = halfOverride != null ? halfOverride : quadFace;
-            if (targetDirection != null) {
-                Sprite s = CustomBlockRegistry.getSpriteForFace(definition, targetDirection);
-                if (s != null) {
-                    return s;
-                }
+        // 4. Directional / Half matching fallback
+        Direction quadFace = quad.getFace() != null ? quad.getFace() : side;
+        Direction targetDirection = halfOverride != null ? halfOverride : quadFace;
+        if (targetDirection != null) {
+            Sprite s = CustomBlockRegistry.getSpriteForFace(definition, targetDirection);
+            if (s != null) {
+                return s;
             }
         }
 
-        // 4. Default texture fallback
+        // 5. Default texture fallback
         if (definition.getDefaultTexture() != null) {
             return CustomBlockRegistry.getSprite(definition.getDefaultTexture());
         }
