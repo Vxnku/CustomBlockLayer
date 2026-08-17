@@ -219,7 +219,6 @@ public class PropertiesResourceReloadListener implements SimpleSynchronousResour
         }
 
         LOGGER.info("Successfully loaded {} CustomBlockLayer definitions from resource packs.", count);
-        ru.vxnku.customblocklayer.render.json.JsonModelManager.updateBakedModels();
     }
 
     private static void parseFaceTexture(Properties props, String key, Direction dir, String namespace, String parentDir, CustomBlockDefinition def) {

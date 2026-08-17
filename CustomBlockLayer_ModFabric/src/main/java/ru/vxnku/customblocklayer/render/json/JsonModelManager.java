@@ -50,6 +50,9 @@ public class JsonModelManager {
                 Identifier modelId = resolveModelIdentifier(def);
                 if (modelId != null) {
                     BakedModel baked = client.getBakedModelManager().getModel(modelId);
+                    if (baked == null || baked.equals(client.getBakedModelManager().getMissingModel())) {
+                        baked = client.getBakedModelManager().getModel(new net.minecraft.client.util.ModelIdentifier(modelId, ""));
+                    }
                     if (baked != null && !baked.equals(client.getBakedModelManager().getMissingModel())) {
                         CustomBlockRegistry.registerJsonModel(def.getId(), baked);
                         LOGGER.info("Registered 3D JSON BakedModel for '{}' -> {}", def.getId(), modelId);
