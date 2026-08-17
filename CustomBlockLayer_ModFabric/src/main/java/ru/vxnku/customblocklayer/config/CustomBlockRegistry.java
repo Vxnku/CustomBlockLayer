@@ -49,16 +49,27 @@ public class CustomBlockRegistry {
         DEFINITIONS.put(definition.getId(), definition);
     }
 
-    public static CustomBlockDefinition getDefinition(String id) {
-        return DEFINITIONS.get(id);
-    }
-
     public static Collection<CustomBlockDefinition> getAllDefinitions() {
         return Collections.unmodifiableCollection(DEFINITIONS.values());
     }
 
+    public static CustomBlockDefinition getDefinition(String id) {
+        if (id == null) return null;
+        CustomBlockDefinition def = DEFINITIONS.get(id);
+        if (def != null) return def;
+        if (id.startsWith("cbl:") || id.startsWith("cbl/")) {
+            def = DEFINITIONS.get(id.substring(4));
+            if (def != null) return def;
+        }
+        if (id.startsWith("customblocklayer:")) {
+            def = DEFINITIONS.get(id.substring("customblocklayer:".length()));
+            if (def != null) return def;
+        }
+        return null;
+    }
+
     public static boolean hasDefinition(String id) {
-        return DEFINITIONS.containsKey(id);
+        return getDefinition(id) != null;
     }
 
     /**

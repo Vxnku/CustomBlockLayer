@@ -39,6 +39,10 @@ public class RetexturedModelManager {
         }
 
         String cacheKey = System.identityHashCode(originalModel) + "_" + customId;
+        if (def.isChest()) {
+            return originalModel;
+        }
+
         if (def.isVerticalSlab()) {
             return MODEL_CACHE.computeIfAbsent(cacheKey, k -> new VerticalSlabBakedModel(originalModel, def));
         }

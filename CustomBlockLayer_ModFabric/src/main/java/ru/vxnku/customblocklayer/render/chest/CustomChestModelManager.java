@@ -37,12 +37,16 @@ public class CustomChestModelManager {
         Identifier textureId = resolveChestTexture(def, chestType);
         if (textureId == null) return null;
 
-        // Append .png if missing
-        if (!textureId.getPath().endsWith(".png")) {
-            textureId = Identifier.of(textureId.getNamespace(), "textures/" + textureId.getPath() + ".png");
+        String path = textureId.getPath();
+        if (!path.startsWith("textures/")) {
+            path = "textures/" + path;
+        }
+        if (!path.endsWith(".png")) {
+            path = path + ".png";
         }
 
-        RenderLayer layer = RenderLayer.getEntityCutout(textureId);
+        Identifier fullTextureId = Identifier.of(textureId.getNamespace(), path);
+        RenderLayer layer = RenderLayer.getEntityCutout(fullTextureId);
         CHEST_LAYER_CACHE.put(cacheKey, layer);
         return layer;
     }
