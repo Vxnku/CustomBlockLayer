@@ -38,11 +38,22 @@ public class CustomBlockRegistry {
     }
 
     public static net.minecraft.client.render.model.BakedModel getJsonModel(String id) {
-        return id != null ? JSON_MODELS.get(id) : null;
+        if (id == null) return null;
+        net.minecraft.client.render.model.BakedModel model = JSON_MODELS.get(id);
+        if (model != null) return model;
+        if (id.startsWith("cbl:") || id.startsWith("cbl/")) {
+            model = JSON_MODELS.get(id.substring(4));
+            if (model != null) return model;
+        }
+        if (id.startsWith("customblocklayer:")) {
+            model = JSON_MODELS.get(id.substring("customblocklayer:".length()));
+            if (model != null) return model;
+        }
+        return null;
     }
 
     public static boolean hasJsonModel(String id) {
-        return id != null && JSON_MODELS.containsKey(id);
+        return getJsonModel(id) != null;
     }
 
     public static void register(CustomBlockDefinition definition) {
