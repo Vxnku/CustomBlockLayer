@@ -49,6 +49,14 @@ public class CustomChestModelManager {
 
     @Nullable
     public static Identifier resolveChestTexture(@NotNull CustomBlockDefinition def, @NotNull ChestType chestType) {
+        if (chestType == ChestType.LEFT) {
+            Identifier left = def.getChestLeftTexture();
+            if (left != null) return left;
+        } else if (chestType == ChestType.RIGHT) {
+            Identifier right = def.getChestRightTexture();
+            if (right != null) return right;
+        }
+
         Identifier texture = def.getChestTexture();
         if (texture != null) {
             return texture;

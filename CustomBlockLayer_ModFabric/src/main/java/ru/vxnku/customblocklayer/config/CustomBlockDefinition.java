@@ -21,6 +21,8 @@ public class CustomBlockDefinition {
     private Identifier openTopTexture;
     private Identifier itemTexture;
     private Identifier chestTexture;
+    private Identifier chestLeftTexture;
+    private Identifier chestRightTexture;
     private String modelPath;
     private final Map<Direction, Identifier> faceTextures = new EnumMap<>(Direction.class);
 
@@ -140,6 +142,22 @@ public class CustomBlockDefinition {
         this.chestTexture = chestTexture;
     }
 
+    public Identifier getChestLeftTexture() {
+        return chestLeftTexture != null ? chestLeftTexture : getChestTexture();
+    }
+
+    public void setChestLeftTexture(Identifier chestLeftTexture) {
+        this.chestLeftTexture = chestLeftTexture;
+    }
+
+    public Identifier getChestRightTexture() {
+        return chestRightTexture != null ? chestRightTexture : getChestTexture();
+    }
+
+    public void setChestRightTexture(Identifier chestRightTexture) {
+        this.chestRightTexture = chestRightTexture;
+    }
+
     public String getModelPath() {
         return modelPath;
     }
@@ -161,6 +179,12 @@ public class CustomBlockDefinition {
         }
         if (chestTexture != null) {
             set.add(chestTexture);
+        }
+        if (chestLeftTexture != null) {
+            set.add(chestLeftTexture);
+        }
+        if (chestRightTexture != null) {
+            set.add(chestRightTexture);
         }
         return set;
     }

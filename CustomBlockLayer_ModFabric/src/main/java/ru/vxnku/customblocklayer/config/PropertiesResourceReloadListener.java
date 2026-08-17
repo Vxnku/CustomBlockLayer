@@ -166,6 +166,28 @@ public class PropertiesResourceReloadListener implements SimpleSynchronousResour
                     def.setChestTexture(resolveTextureId(resourceId.getNamespace(), parentDir, chestTextureStr.trim()));
                 }
 
+                String chestLeftStr = props.getProperty("texture.left");
+                if (chestLeftStr == null || chestLeftStr.trim().isEmpty()) {
+                    chestLeftStr = props.getProperty("texture.chest.left");
+                }
+                if (chestLeftStr == null || chestLeftStr.trim().isEmpty()) {
+                    chestLeftStr = props.getProperty("texture_left");
+                }
+                if (chestLeftStr != null && !chestLeftStr.trim().isEmpty()) {
+                    def.setChestLeftTexture(resolveTextureId(resourceId.getNamespace(), parentDir, chestLeftStr.trim()));
+                }
+
+                String chestRightStr = props.getProperty("texture.right");
+                if (chestRightStr == null || chestRightStr.trim().isEmpty()) {
+                    chestRightStr = props.getProperty("texture.chest.right");
+                }
+                if (chestRightStr == null || chestRightStr.trim().isEmpty()) {
+                    chestRightStr = props.getProperty("texture_right");
+                }
+                if (chestRightStr != null && !chestRightStr.trim().isEmpty()) {
+                    def.setChestRightTexture(resolveTextureId(resourceId.getNamespace(), parentDir, chestRightStr.trim()));
+                }
+
                 // 3D JSON Model path (e.g. cbl:block/vault_chest)
                 String modelStr = props.getProperty("model");
                 if (modelStr == null || modelStr.trim().isEmpty()) {
