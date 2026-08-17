@@ -28,6 +28,13 @@ public class PropertiesResourceReloadListener implements SimpleSynchronousResour
 
     @Override
     public void reload(ResourceManager manager) {
+        loadDefinitions(manager);
+        CustomBlockRegistry.updateSprites();
+        ru.vxnku.customblocklayer.render.json.JsonModelManager.updateBakedModels();
+    }
+
+    public static void loadDefinitions(ResourceManager manager) {
+        if (manager == null) return;
         CustomBlockRegistry.clear();
         ru.vxnku.customblocklayer.render.RetexturedModelManager.clear();
         int count = 0;
@@ -215,14 +222,14 @@ public class PropertiesResourceReloadListener implements SimpleSynchronousResour
         ru.vxnku.customblocklayer.render.json.JsonModelManager.updateBakedModels();
     }
 
-    private void parseFaceTexture(Properties props, String key, Direction dir, String namespace, String parentDir, CustomBlockDefinition def) {
+    private static void parseFaceTexture(Properties props, String key, Direction dir, String namespace, String parentDir, CustomBlockDefinition def) {
         String val = props.getProperty(key);
         if (val != null && !val.trim().isEmpty()) {
             def.setFaceTexture(dir, resolveTextureId(namespace, parentDir, val.trim()));
         }
     }
 
-    private Identifier resolveTextureId(String currentNamespace, String parentDir, String pathOrId) {
+    private static Identifier resolveTextureId(String currentNamespace, String parentDir, String pathOrId) {
         if (pathOrId.endsWith(".png")) {
             pathOrId = pathOrId.substring(0, pathOrId.length() - 4);
         }
@@ -253,7 +260,7 @@ public class PropertiesResourceReloadListener implements SimpleSynchronousResour
         return Identifier.of(namespace, path);
     }
 
-    private Identifier parseIdentifier(String str, String defaultNamespace) {
+    private static Identifier parseIdentifier(String str, String defaultNamespace) {
         if (str.contains(":")) {
             return Identifier.of(str);
         }

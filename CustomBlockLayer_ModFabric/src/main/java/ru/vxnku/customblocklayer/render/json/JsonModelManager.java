@@ -22,6 +22,11 @@ public class JsonModelManager {
 
     public static void init() {
         ModelLoadingPlugin.register(pluginContext -> {
+            MinecraftClient client = MinecraftClient.getInstance();
+            if (client != null && client.getResourceManager() != null) {
+                ru.vxnku.customblocklayer.config.PropertiesResourceReloadListener.loadDefinitions(client.getResourceManager());
+            }
+
             EXTRA_MODELS.clear();
             for (CustomBlockDefinition def : CustomBlockRegistry.getAllDefinitions()) {
                 if (def.isJsonModel()) {
@@ -29,6 +34,7 @@ public class JsonModelManager {
                     if (modelId != null) {
                         EXTRA_MODELS.add(modelId);
                         pluginContext.addModels(modelId);
+                        LOGGER.info("Registered extra JSON model for loading: '{}' -> {}", def.getId(), modelId);
                     }
                 }
             }
