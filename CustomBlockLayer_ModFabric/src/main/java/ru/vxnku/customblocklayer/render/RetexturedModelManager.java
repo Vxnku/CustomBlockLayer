@@ -43,6 +43,13 @@ public class RetexturedModelManager {
             return MODEL_CACHE.computeIfAbsent(cacheKey, k -> new VerticalSlabBakedModel(originalModel, def));
         }
 
+        if (def.isJsonModel()) {
+            BakedModel jsonModel = CustomBlockRegistry.getJsonModel(customId);
+            if (jsonModel != null) {
+                return jsonModel;
+            }
+        }
+
         return MODEL_CACHE.computeIfAbsent(cacheKey, k -> new RetexturedBakedModel(originalModel, def));
     }
 }

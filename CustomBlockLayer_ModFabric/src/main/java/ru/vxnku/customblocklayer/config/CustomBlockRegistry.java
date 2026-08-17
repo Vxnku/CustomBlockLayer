@@ -21,11 +21,28 @@ public class CustomBlockRegistry {
     private static final Logger LOGGER = LoggerFactory.getLogger("CustomBlockLayer");
     private static final Map<String, CustomBlockDefinition> DEFINITIONS = new ConcurrentHashMap<>();
     private static final Map<Identifier, Sprite> SPRITES = new ConcurrentHashMap<>();
+    private static final Map<String, net.minecraft.client.render.model.BakedModel> JSON_MODELS = new ConcurrentHashMap<>();
     private static final Identifier MISSINGNO = Identifier.of("minecraft", "missingno");
 
     public static void clear() {
         DEFINITIONS.clear();
         SPRITES.clear();
+        JSON_MODELS.clear();
+        ru.vxnku.customblocklayer.render.chest.CustomChestModelManager.clear();
+    }
+
+    public static void registerJsonModel(String id, net.minecraft.client.render.model.BakedModel model) {
+        if (id != null && model != null) {
+            JSON_MODELS.put(id, model);
+        }
+    }
+
+    public static net.minecraft.client.render.model.BakedModel getJsonModel(String id) {
+        return id != null ? JSON_MODELS.get(id) : null;
+    }
+
+    public static boolean hasJsonModel(String id) {
+        return id != null && JSON_MODELS.containsKey(id);
     }
 
     public static void register(CustomBlockDefinition definition) {

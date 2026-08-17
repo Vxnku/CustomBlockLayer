@@ -20,6 +20,8 @@ public class CustomBlockDefinition {
     private Identifier defaultTexture;
     private Identifier openTopTexture;
     private Identifier itemTexture;
+    private Identifier chestTexture;
+    private String modelPath;
     private final Map<Direction, Identifier> faceTextures = new EnumMap<>(Direction.class);
 
     public CustomBlockDefinition(String id) {
@@ -45,6 +47,18 @@ public class CustomBlockDefinition {
             || "verticalslab".equalsIgnoreCase(type)
             || "v_slab".equalsIgnoreCase(type)
             || id.contains("vertical_slab");
+    }
+
+    public boolean isChest() {
+        return "chest".equalsIgnoreCase(type)
+            || "animated_chest".equalsIgnoreCase(type)
+            || "custom_chest".equalsIgnoreCase(type);
+    }
+
+    public boolean isJsonModel() {
+        return "json".equalsIgnoreCase(type)
+            || "model".equalsIgnoreCase(type)
+            || modelPath != null;
     }
 
     public String getDisplayName() {
@@ -118,6 +132,22 @@ public class CustomBlockDefinition {
         return null;
     }
 
+    public Identifier getChestTexture() {
+        return chestTexture != null ? chestTexture : defaultTexture;
+    }
+
+    public void setChestTexture(Identifier chestTexture) {
+        this.chestTexture = chestTexture;
+    }
+
+    public String getModelPath() {
+        return modelPath;
+    }
+
+    public void setModelPath(String modelPath) {
+        this.modelPath = modelPath;
+    }
+
     public Set<Identifier> getAllReferencedTextures() {
         Set<Identifier> set = new HashSet<>(faceTextures.values());
         if (defaultTexture != null) {
@@ -128,6 +158,9 @@ public class CustomBlockDefinition {
         }
         if (itemTexture != null) {
             set.add(itemTexture);
+        }
+        if (chestTexture != null) {
+            set.add(chestTexture);
         }
         return set;
     }

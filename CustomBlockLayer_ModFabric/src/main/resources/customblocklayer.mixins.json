@@ -15,7 +15,9 @@
     "AbstractBlockStateMixin",
     "ItemGroupsMixin",
     "ItemGroupMixin",
-    "TrapdoorBlockMixin"
+    "TrapdoorBlockMixin",
+    "ChestBlockEntityRendererMixin",
+    "BuiltinModelItemRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

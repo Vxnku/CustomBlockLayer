@@ -27,7 +27,10 @@ public class CustomBlockLayerClient implements ClientModInitializer {
         // 1. Register Creative Tab
         CBLItemGroups.init();
 
-        // 2. Register Resource Reload Listener for .properties files
+        // 2. Register JSON Model Loading Plugin
+        ru.vxnku.customblocklayer.render.json.JsonModelManager.init();
+
+        // 3. Register Resource Reload Listener for .properties files
         ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES)
             .registerReloadListener(new PropertiesResourceReloadListener());
 

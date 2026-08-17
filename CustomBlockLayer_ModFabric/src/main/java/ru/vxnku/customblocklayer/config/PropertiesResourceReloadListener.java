@@ -157,7 +157,25 @@ public class PropertiesResourceReloadListener implements SimpleSynchronousResour
                     def.setItemTexture(resolveTextureId(resourceId.getNamespace(), parentDir, itemTextureStr.trim()));
                 }
 
-                if (def.getDefaultTexture() == null && def.getAllReferencedTextures().isEmpty()) {
+                // 3D Chest Entity Texture (64x64)
+                String chestTextureStr = props.getProperty("texture.chest");
+                if (chestTextureStr == null || chestTextureStr.trim().isEmpty()) {
+                    chestTextureStr = props.getProperty("chest.texture");
+                }
+                if (chestTextureStr != null && !chestTextureStr.trim().isEmpty()) {
+                    def.setChestTexture(resolveTextureId(resourceId.getNamespace(), parentDir, chestTextureStr.trim()));
+                }
+
+                // 3D JSON Model path (e.g. cbl:block/vault_chest)
+                String modelStr = props.getProperty("model");
+                if (modelStr == null || modelStr.trim().isEmpty()) {
+                    modelStr = props.getProperty("model.json");
+                }
+                if (modelStr != null && !modelStr.trim().isEmpty()) {
+                    def.setModelPath(modelStr.trim());
+                }
+
+                if (def.getDefaultTexture() == null && def.getAllReferencedTextures().isEmpty() && !def.isJsonModel()) {
                     def.setDefaultTexture(resolveTextureId(resourceId.getNamespace(), parentDir, fileNameNoExt));
                 }
 
@@ -172,6 +190,7 @@ public class PropertiesResourceReloadListener implements SimpleSynchronousResour
         }
 
         LOGGER.info("Successfully loaded {} CustomBlockLayer definitions from resource packs.", count);
+        ru.vxnku.customblocklayer.render.json.JsonModelManager.updateBakedModels();
     }
 
     private void parseFaceTexture(Properties props, String key, Direction dir, String namespace, String parentDir, CustomBlockDefinition def) {
