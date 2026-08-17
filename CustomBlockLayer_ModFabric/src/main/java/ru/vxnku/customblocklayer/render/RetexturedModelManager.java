@@ -19,6 +19,7 @@ public class RetexturedModelManager {
 
     public static void clear() {
         MODEL_CACHE.clear();
+        ru.vxnku.customblocklayer.render.cit.CitModelBridge.clear();
     }
 
     public static BakedModel getModel(BakedModel originalModel, String customId, @Nullable BlockState state) {
@@ -48,6 +49,14 @@ public class RetexturedModelManager {
         }
 
         if (def.isJsonModel()) {
+            // First check CIT Resewn soft bridge (provides 100% accurate OptiFine CIT texture/quad mapping)
+            if (ru.vxnku.customblocklayer.render.cit.CitModelBridge.isCitAvailable()) {
+                BakedModel citModel = ru.vxnku.customblocklayer.render.cit.CitModelBridge.getTransformedCitModel(def, state);
+                if (citModel != null) {
+                    return citModel;
+                }
+            }
+
             BakedModel jsonModel = CustomBlockRegistry.getJsonModel(customId);
             if (jsonModel != null) {
                 return jsonModel;

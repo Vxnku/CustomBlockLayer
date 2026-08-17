@@ -52,6 +52,7 @@ public class CBLClientNetworking {
         });
 
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+            ru.vxnku.customblocklayer.render.cit.CitModelBridge.logConnectionHandshake();
             if (ClientPlayNetworking.canSend(CBLPayloads.HandshakePayload.ID)) {
                 sender.sendPacket(new CBLPayloads.HandshakePayload(PROTOCOL_VERSION));
                 LOGGER.info("[CBL-Client] Sent CBL Handshake packet to server.");
