@@ -204,6 +204,40 @@ public class PropertiesResourceReloadListener implements SimpleSynchronousResour
                     def.setModelPath(modelStr.trim());
                 }
 
+                // scale (e.g. scale = 2.0)
+                String scaleStr = props.getProperty("scale");
+                if (scaleStr != null && !scaleStr.trim().isEmpty()) {
+                    try {
+                        def.setScale(Float.parseFloat(scaleStr.trim()));
+                    } catch (NumberFormatException ignored) {}
+                }
+
+                // offset (e.g. offset = 0.0, 0.5, 0.0 or offsetY = 0.5)
+                String offsetStr = props.getProperty("offset");
+                if (offsetStr != null && !offsetStr.trim().isEmpty()) {
+                    String[] parts = offsetStr.split(",");
+                    try {
+                        if (parts.length >= 1) def.setOffsetX(Float.parseFloat(parts[0].trim()));
+                        if (parts.length >= 2) def.setOffsetY(Float.parseFloat(parts[1].trim()));
+                        if (parts.length >= 3) def.setOffsetZ(Float.parseFloat(parts[2].trim()));
+                    } catch (NumberFormatException ignored) {}
+                }
+                String offsetYStr = props.getProperty("offsetY");
+                if (offsetYStr != null && !offsetYStr.trim().isEmpty()) {
+                    try {
+                        def.setOffsetY(Float.parseFloat(offsetYStr.trim()));
+                    } catch (NumberFormatException ignored) {}
+                }
+
+                // rotation / extraRotation (e.g. rotation = 90)
+                String rotStr = props.getProperty("rotation");
+                if (rotStr == null) rotStr = props.getProperty("rotY");
+                if (rotStr != null && !rotStr.trim().isEmpty()) {
+                    try {
+                        def.setExtraRotation(Float.parseFloat(rotStr.trim()));
+                    } catch (NumberFormatException ignored) {}
+                }
+
                 if (def.getDefaultTexture() == null && def.getAllReferencedTextures().isEmpty() && !def.isJsonModel()) {
                     def.setDefaultTexture(resolveTextureId(resourceId.getNamespace(), parentDir, fileNameNoExt));
                 }

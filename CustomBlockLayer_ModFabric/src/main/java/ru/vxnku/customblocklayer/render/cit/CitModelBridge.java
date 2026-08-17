@@ -100,9 +100,9 @@ public class CitModelBridge {
 
         // If CIT Resewn successfully returned a custom model
         if (rawCitModel != null && !rawCitModel.equals(defaultItemModel) && !rawCitModel.equals(client.getBakedModelManager().getMissingModel())) {
-            BakedModel transformed = new TransformedCitBakedModel(rawCitModel, facing);
+            BakedModel transformed = new TransformedCitBakedModel(rawCitModel, facing, def);
             TRANSFORMED_MODEL_CACHE.put(cacheKey, transformed);
-            LOGGER.info("[CBL-CIT] Successfully resolved and transformed CIT Model for '{}' (facing: {})", def.getId(), facing);
+            LOGGER.info("[CBL-CIT] Successfully resolved and transformed CIT Model for '{}' (facing: {}, scale: {})", def.getId(), facing, def.getScale());
             return transformed;
         }
 

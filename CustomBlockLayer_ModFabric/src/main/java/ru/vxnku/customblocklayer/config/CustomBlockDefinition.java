@@ -24,6 +24,11 @@ public class CustomBlockDefinition {
     private Identifier chestLeftTexture;
     private Identifier chestRightTexture;
     private String modelPath;
+    private float scale = 1.0f;
+    private float offsetX = 0.0f;
+    private float offsetY = 0.0f;
+    private float offsetZ = 0.0f;
+    private float extraRotation = 0.0f;
     private final Map<Direction, Identifier> faceTextures = new EnumMap<>(Direction.class);
 
     public CustomBlockDefinition(String id) {
@@ -164,6 +169,46 @@ public class CustomBlockDefinition {
 
     public void setModelPath(String modelPath) {
         this.modelPath = modelPath;
+    }
+
+    public float getScale() {
+        return scale;
+    }
+
+    public void setScale(float scale) {
+        this.scale = scale;
+    }
+
+    public float getOffsetX() {
+        return offsetX;
+    }
+
+    public void setOffsetX(float offsetX) {
+        this.offsetX = offsetX;
+    }
+
+    public float getOffsetY() {
+        return offsetY;
+    }
+
+    public void setOffsetY(float offsetY) {
+        this.offsetY = offsetY;
+    }
+
+    public float getOffsetZ() {
+        return offsetZ;
+    }
+
+    public void setOffsetZ(float offsetZ) {
+        this.offsetZ = offsetZ;
+    }
+
+    public float getExtraRotation() {
+        return extraRotation;
+    }
+
+    public void setExtraRotation(float extraRotation) {
+        this.extraRotation = extraRotation;
     }
 
     public Set<Identifier> getAllReferencedTextures() {

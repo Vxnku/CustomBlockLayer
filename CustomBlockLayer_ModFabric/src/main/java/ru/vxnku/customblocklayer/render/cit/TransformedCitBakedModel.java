@@ -27,7 +27,7 @@ public class TransformedCitBakedModel implements BakedModel {
     private final BakedModel originalModel;
     private final List<BakedQuad> transformedUnculledQuads;
 
-    public TransformedCitBakedModel(@NotNull BakedModel originalModel, @Nullable Direction facing) {
+    public TransformedCitBakedModel(@NotNull BakedModel originalModel, @Nullable Direction facing, @NotNull ru.vxnku.customblocklayer.config.CustomBlockDefinition def) {
         this.originalModel = originalModel;
 
         // 1. Gather all original raw quads
@@ -61,11 +61,10 @@ public class TransformedCitBakedModel implements BakedModel {
         // 3. Build Matrix
         MatrixStack matrices = new MatrixStack();
 
-        // Center on block anchor
-        matrices.translate(0.5f, 0.0f, 0.5f);
+        // Center on block anchor + custom offsets
+        matrices.translate(0.5f + def.getOffsetX(), 0.0f + def.getOffsetY(), 0.5f + def.getOffsetZ());
 
-        // Rotation matching facing
-        // In Blockbench model coords, muzzle points -X (West). Rotate so facing matches correctly.
+        // Rotation matching facing + extraRotation from definition
         if (facing != null) {
             float rotY = switch (facing) {
                 case NORTH -> 90.0f;
@@ -74,7 +73,16 @@ public class TransformedCitBakedModel implements BakedModel {
                 case EAST -> 180.0f;
                 default -> 0.0f;
             };
-            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(rotY));
+            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(rotY + def.getExtraRotation()));
+        } else if (def.getExtraRotation() != 0.0f) {
+            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(def.getExtraRotation()));
+        }
+
+        // Apply scale from definition
+        float scale = def.getScale();
+        if (scale <= 0.0f) scale = 1.0f;
+        if (scale != 1.0f) {
+            matrices.scale(scale, scale, scale);
         }
 
         // Center model geometry and auto-ground to floor (Y=0)
