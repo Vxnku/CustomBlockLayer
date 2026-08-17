@@ -64,18 +64,11 @@ public class TransformedCitBakedModel implements BakedModel {
         // Center on block anchor + custom offsets
         matrices.translate(0.5f + def.getOffsetX(), 0.0f + def.getOffsetY(), 0.5f + def.getOffsetZ());
 
-        // Rotation matching facing + extraRotation from definition
-        if (facing != null) {
-            float rotY = switch (facing) {
-                case NORTH -> 90.0f;
-                case SOUTH -> -90.0f;
-                case WEST -> 0.0f;
-                case EAST -> 180.0f;
-                default -> 0.0f;
-            };
-            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(rotY + def.getExtraRotation()));
-        } else if (def.getExtraRotation() != 0.0f) {
-            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(def.getExtraRotation()));
+        // Rotation matching native Minecraft compass facing + extraRotation from definition
+        float baseRotation = (facing != null) ? -facing.asRotation() : 0.0f;
+        float totalRotation = baseRotation + def.getExtraRotation();
+        if (totalRotation != 0.0f) {
+            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(totalRotation));
         }
 
         // Apply scale from definition
