@@ -112,7 +112,7 @@ public class CustomBlockRegistry {
     }
 
     private static Sprite findSpriteInAtlas(SpriteAtlasTexture blockAtlas, Identifier textureId) {
-        if (textureId == null) return null;
+        if (textureId == null || blockAtlas == null) return null;
 
         // 1. Direct lookup
         Sprite sprite = blockAtlas.getSprite(textureId);
@@ -138,6 +138,7 @@ public class CustomBlockRegistry {
                 withoutCbl,
                 "textures/" + cleanPath,
                 "textures/cbl/" + withoutCbl,
+                "cbl/" + withoutCbl,
                 "block/" + cleanPath,
                 "block/" + withoutCbl
             };
@@ -153,7 +154,9 @@ public class CustomBlockRegistry {
 
         String[] namespaces = new String[]{
             textureId.getNamespace(),
-            textureId.getNamespace().equals("minecraft") ? "customblocklayer" : "minecraft"
+            "minecraft",
+            "customblocklayer",
+            "cbl"
         };
 
         for (String ns : namespaces) {
@@ -172,11 +175,24 @@ public class CustomBlockRegistry {
     public static Sprite getSprite(Identifier textureId) {
         if (textureId == null) return null;
         Sprite cached = SPRITES.get(textureId);
-        if (cached == null) {
-            updateSprites();
-            cached = SPRITES.get(textureId);
+        if (cached != null) {
+            return cached;
         }
-        return cached;
+
+        MinecraftClient client = MinecraftClient.getInstance();
+        if (client != null && client.getBakedModelManager() != null) {
+            SpriteAtlasTexture blockAtlas = client.getBakedModelManager().getAtlas(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
+            if (blockAtlas != null) {
+                cached = findSpriteInAtlas(blockAtlas, textureId);
+                if (cached != null) {
+                    SPRITES.put(textureId, cached);
+                    return cached;
+                }
+            }
+        }
+
+        updateSprites();
+        return SPRITES.get(textureId);
     }
 
     public static Sprite getSpriteForFace(CustomBlockDefinition def, Direction direction) {
